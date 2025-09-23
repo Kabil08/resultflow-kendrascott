@@ -316,3 +316,46 @@ Based on this comprehensive analysis, I've curated some perfect pieces for you:`
       "For the perfect fit, let's determine your size. Would you like to see our size guide or do you know your size?",
   },
 };
+
+export interface Review {
+  id: string;
+  userName: string;
+  userImage: string;
+  rating: number;
+  comment: string;
+  productName: string;
+  date: string;
+}
+
+export const userReviews: Review[] = [
+  {
+    id: "1",
+    userName: "Sarah M.",
+    userImage: "https://i.pravatar.cc/150?img=1",
+    rating: 5,
+    comment:
+      "I absolutely love the personalized recommendations! The AI helped me find the perfect necklace that matches my style perfectly.",
+    productName: "Diamond Pendant Necklace",
+    date: "2024-03-15",
+  },
+  {
+    id: "2",
+    userName: "Emily R.",
+    userImage: "https://i.pravatar.cc/150?img=2",
+    rating: 5,
+    comment:
+      "The smart cart feature made it so easy to find matching pieces. I got a beautiful earring and bracelet set that goes together wonderfully!",
+    productName: "Pearl Earring Set",
+    date: "2024-03-10",
+  },
+  {
+    id: "3",
+    userName: "Jessica K.",
+    userImage: "https://i.pravatar.cc/150?img=3",
+    rating: 5,
+    comment:
+      "The AI suggestions were spot on! Found exactly what I was looking for without spending hours browsing.",
+    productName: "Gold Tennis Bracelet",
+    date: "2024-03-05",
+  },
+];

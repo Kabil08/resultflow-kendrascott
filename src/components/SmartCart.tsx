@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetHeader } from "./ui/sheet";
 import { useIsMobile } from "../hooks/use-mobile";
 import type { Product } from "../data/mockData";
 import confetti from "canvas-confetti";
+import { ReviewsDialog } from "./ReviewsDialog";
 
 interface ConfettiOptions {
   spread?: number;
@@ -32,11 +33,13 @@ export function SmartCart({
 }: SmartCartProps) {
   const isMobile = useIsMobile();
   const [isCheckoutComplete, setIsCheckoutComplete] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
 
   // Reset states when dialog is opened
   useEffect(() => {
     if (isOpen) {
       setIsCheckoutComplete(false);
+      setShowReviews(false);
     }
   }, [isOpen]);
 
@@ -94,7 +97,20 @@ export function SmartCart({
   };
 
   const handleClose = () => {
+    if (!isCheckoutComplete && cartItems.length > 0) {
+      setShowReviews(true);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleReviewsClose = () => {
+    setShowReviews(false);
     onClose();
+  };
+
+  const handleBackToCart = () => {
+    setShowReviews(false);
   };
 
   const renderSuccessContent = () => (
@@ -222,20 +238,27 @@ export function SmartCart({
   );
 
   return (
-    <Sheet open={isOpen} onOpenChange={handleClose}>
-      <SheetContent
-        side={isMobile ? "bottom" : "right"}
-        className={`${
-          isMobile
-            ? "h-[85vh] border-t rounded-t-[10px] p-0 flex flex-col bg-ks-cream"
-            : "w-full md:w-[400px] p-0 border-l sm:border-l flex flex-col bg-ks-cream"
-        }`}
-      >
-        <SheetHeader className="p-4 border-b border-ks-border bg-ks-gold relative">
-          {renderHeader()}
-        </SheetHeader>
-        <div className="flex flex-col max-h-[80vh]">{renderContent()}</div>
-      </SheetContent>
-    </Sheet>
+    <>
+      <Sheet open={isOpen} onOpenChange={handleClose}>
+        <SheetContent
+          side={isMobile ? "bottom" : "right"}
+          className={`${
+            isMobile
+              ? "h-[85vh] border-t rounded-t-[10px] p-0 flex flex-col bg-ks-cream"
+              : "w-full md:w-[400px] p-0 border-l sm:border-l flex flex-col bg-ks-cream"
+          }`}
+        >
+          <SheetHeader className="p-4 border-b border-ks-border bg-ks-gold relative">
+            {renderHeader()}
+          </SheetHeader>
+          <div className="flex flex-col max-h-[80vh]">{renderContent()}</div>
+        </SheetContent>
+      </Sheet>
+      <ReviewsDialog
+        isOpen={showReviews}
+        onClose={handleReviewsClose}
+        onBackToCart={handleBackToCart}
+      />
+    </>
   );
 }
