@@ -38,3 +38,40 @@ export interface CustomizedProduct {
   base_price: number;
   final_price: number;
 }
+
+export interface SizeOption {
+  id: string;
+  name: string;
+  value: string;
+  description?: string;
+}
+
+export interface SizeGuideImage {
+  url: string;
+  alt: string;
+}
+
+export interface SizeCustomizationState {
+  selectedSize: SizeOption | null;
+  showSizeGuide: boolean;
+}
+
+export const DEFAULT_SIZE_OPTIONS: SizeOption[] = [
+  {
+    id: "size-1",
+    name: '15" - 17"',
+    value: "15-17",
+    description: "Standard length for choker or high necklace",
+  },
+  {
+    id: "size-2",
+    name: '17" - 20"',
+    value: "17-20",
+    description: "Classic length, sits at collarbone",
+  },
+];
+
+export const SIZE_GUIDE_IMAGE: SizeGuideImage = {
+  url: "https://res.cloudinary.com/dbtapyfau/image/upload/v1758987711/Screenshot_2025-09-27_at_9.11.23_PM_o7zcya.png",
+  alt: "Necklace Size Guide",
+};

@@ -15,6 +15,7 @@ import type { Message, Product, ProductRecommendation } from "../data/mockData";
 import { SmartCart, type CartItem } from "./SmartCart";
 import Markdown from "markdown-to-jsx";
 import { ColorCustomizationDialog } from "./ColorCustomizationDialog";
+import type { SizeOption } from "../types/customization";
 
 interface ChatDialogProps {
   isOpen: boolean;
@@ -153,10 +154,16 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
 
   const handleColorSelect = (
     productId: string,
-    color: { name: string; value: string; price_adjustment: number }
+    color: { name: string; value: string; price_adjustment: number },
+    size: SizeOption
   ) => {
-    handleUpdateColor(productId, color);
-    setCustomizingProduct(null);
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === productId
+          ? { ...item, selectedColor: color, selectedSize: size }
+          : item
+      )
+    );
   };
 
   const getAIResponse = (
@@ -463,8 +470,8 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
           isOpen={true}
           onClose={() => setCustomizingProduct(null)}
           product={customizingProduct}
-          onCustomize={(productId, color) =>
-            handleColorSelect(productId, color)
+          onCustomize={(productId, color, size) =>
+            handleColorSelect(productId, color, size)
           }
         />
       )}
