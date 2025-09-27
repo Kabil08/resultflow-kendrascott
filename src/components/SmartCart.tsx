@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Minus, Plus, PartyPopper } from "lucide-react";
+import { Minus, Plus, PartyPopper, Palette } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetHeader } from "./ui/sheet";
 import { useIsMobile } from "../hooks/use-mobile";
 import type { Product } from "../data/mockData";
 import confetti from "canvas-confetti";
 import { ReviewsDialog } from "./ReviewsDialog";
+import { ColorCustomizationDialog } from "./ColorCustomizationDialog";
 
 interface ConfettiOptions {
   spread?: number;
@@ -16,6 +17,11 @@ interface ConfettiOptions {
 
 export interface CartItem extends Product {
   quantity: number;
+  selectedColor?: {
+    name: string;
+    value: string;
+    price_adjustment: number;
+  };
 }
 
 interface SmartCartProps {
@@ -23,6 +29,10 @@ interface SmartCartProps {
   onClose: () => void;
   cartItems: CartItem[];
   onUpdateQuantity: (productId: string, newQuantity: number) => void;
+  onUpdateColor?: (
+    productId: string,
+    color: { name: string; value: string; price_adjustment: number }
+  ) => void;
 }
 
 export function SmartCart({
@@ -30,16 +40,21 @@ export function SmartCart({
   onClose,
   cartItems,
   onUpdateQuantity,
+  onUpdateColor,
 }: SmartCartProps) {
   const isMobile = useIsMobile();
   const [isCheckoutComplete, setIsCheckoutComplete] = useState(false);
   const [showReviews, setShowReviews] = useState(false);
+  const [customizingProduct, setCustomizingProduct] = useState<CartItem | null>(
+    null
+  );
 
   // Reset states when dialog is opened
   useEffect(() => {
     if (isOpen) {
       setIsCheckoutComplete(false);
       setShowReviews(false);
+      setCustomizingProduct(null);
     }
   }, [isOpen]);
 
@@ -113,6 +128,14 @@ export function SmartCart({
     setShowReviews(false);
   };
 
+  const handleCustomize = (
+    productId: string,
+    color: { name: string; value: string; price_adjustment: number }
+  ) => {
+    onUpdateColor?.(productId, color);
+    setCustomizingProduct(null);
+  };
+
   const renderSuccessContent = () => (
     <div className="flex flex-col items-center justify-center p-8 text-center space-y-4">
       <div className="animate-bounce-slow">
@@ -172,34 +195,59 @@ export function SmartCart({
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-ks-dark">{item.name}</h3>
-                    <p className="text-sm text-ks-dark/60">
-                      ${item.price.toFixed(2)}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-ks-dark/60">
+                        $
+                        {(
+                          item.price +
+                          (item.selectedColor?.price_adjustment || 0)
+                        ).toFixed(2)}
+                      </p>
+                      {item.selectedColor && (
+                        <span className="text-xs text-ks-dark/60">
+                          ({item.selectedColor.name})
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 bg-white rounded-lg p-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 hover:bg-ks-beige text-ks-dark"
-                      onClick={() =>
-                        onUpdateQuantity(item.id, item.quantity - 1)
-                      }
-                    >
-                      <Minus className="h-3 w-3" />
-                    </Button>
-                    <span className="text-sm font-medium w-6 text-center text-ks-dark">
-                      {item.quantity}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 hover:bg-ks-beige text-ks-dark"
-                      onClick={() =>
-                        onUpdateQuantity(item.id, item.quantity + 1)
-                      }
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 bg-white rounded-lg p-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 hover:bg-ks-beige text-ks-dark"
+                        onClick={() =>
+                          onUpdateQuantity(item.id, item.quantity - 1)
+                        }
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="text-sm font-medium w-6 text-center text-ks-dark">
+                        {item.quantity}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 hover:bg-ks-beige text-ks-dark"
+                        onClick={() =>
+                          onUpdateQuantity(item.id, item.quantity + 1)
+                        }
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    {onUpdateColor &&
+                      item.name === "Elisa Gold Pendant Necklace" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs border-ks-gold text-ks-dark hover:bg-ks-beige"
+                          onClick={() => setCustomizingProduct(item)}
+                        >
+                          <Palette className="h-3 w-3 mr-1" />
+                          Customize
+                        </Button>
+                      )}
                   </div>
                 </div>
               </div>
@@ -259,6 +307,14 @@ export function SmartCart({
         onClose={handleReviewsClose}
         onBackToCart={handleBackToCart}
       />
+      {customizingProduct && (
+        <ColorCustomizationDialog
+          isOpen={true}
+          onClose={() => setCustomizingProduct(null)}
+          product={customizingProduct}
+          onCustomize={handleCustomize}
+        />
+      )}
     </>
   );
 }

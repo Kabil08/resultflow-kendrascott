@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Send, Bot, User, Check, Headphones } from "lucide-react";
+import { X, Send, Bot, User, Check, Headphones, Palette } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
@@ -14,6 +14,7 @@ import { mockRecommendations, commonResponses } from "../data/mockData";
 import type { Message, Product, ProductRecommendation } from "../data/mockData";
 import { SmartCart, type CartItem } from "./SmartCart";
 import Markdown from "markdown-to-jsx";
+import { ColorCustomizationDialog } from "./ColorCustomizationDialog";
 
 interface ChatDialogProps {
   isOpen: boolean;
@@ -44,6 +45,9 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
   }>({});
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showSmartCart, setShowSmartCart] = useState(false);
+  const [customizingProduct, setCustomizingProduct] = useState<Product | null>(
+    null
+  );
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -130,6 +134,29 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
         item.id === productId ? { ...item, quantity: newQuantity } : item
       )
     );
+  };
+
+  const handleUpdateColor = (
+    productId: string,
+    color: { name: string; value: string; price_adjustment: number }
+  ) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === productId ? { ...item, selectedColor: color } : item
+      )
+    );
+  };
+
+  const handleCustomize = (product: Product) => {
+    setCustomizingProduct(product);
+  };
+
+  const handleColorSelect = (
+    productId: string,
+    color: { name: string; value: string; price_adjustment: number }
+  ) => {
+    handleUpdateColor(productId, color);
+    setCustomizingProduct(null);
   };
 
   const getAIResponse = (
@@ -244,6 +271,17 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
                 <p className="text-sm text-ks-dark/60">
                   ${product.price.toFixed(2)}
                 </p>
+                {product.name === "Elisa Gold Pendant Necklace" && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 text-xs border-ks-gold text-ks-dark hover:bg-ks-beige"
+                    onClick={() => handleCustomize(product)}
+                  >
+                    <Palette className="h-3 w-3 mr-1" />
+                    Customize Colors
+                  </Button>
+                )}
               </div>
             </div>
           ))}
@@ -417,7 +455,19 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
         onClose={() => setShowSmartCart(false)}
         cartItems={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
+        onUpdateColor={handleUpdateColor}
       />
+
+      {customizingProduct && (
+        <ColorCustomizationDialog
+          isOpen={true}
+          onClose={() => setCustomizingProduct(null)}
+          product={customizingProduct}
+          onCustomize={(productId, color) =>
+            handleColorSelect(productId, color)
+          }
+        />
+      )}
     </>
   );
 }
