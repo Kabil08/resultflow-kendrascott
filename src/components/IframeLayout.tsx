@@ -22,7 +22,7 @@ export function IframeLayout() {
   return (
     <div className="relative w-full h-screen">
       {/* Show fallback or iframe based on error state */}
-      {true ? (
+      {iframeError ? (
         <IframeFallback />
       ) : (
         <iframe

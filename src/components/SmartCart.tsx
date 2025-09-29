@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Minus, Plus, PartyPopper, Palette, Ruler } from "lucide-react";
+import { Minus, Plus, PartyPopper, Palette } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetHeader } from "./ui/sheet";
 import { useIsMobile } from "../hooks/use-mobile";
@@ -35,7 +35,6 @@ interface SmartCartProps {
     productId: string,
     color: { name: string; value: string; price_adjustment: number }
   ) => void;
-  onUpdateSize?: (productId: string, size: SizeOption) => void;
 }
 
 export function SmartCart({
@@ -44,7 +43,6 @@ export function SmartCart({
   cartItems,
   onUpdateQuantity,
   onUpdateColor,
-  onUpdateSize,
 }: SmartCartProps) {
   const isMobile = useIsMobile();
   const [isCheckoutComplete, setIsCheckoutComplete] = useState(false);
