@@ -308,7 +308,7 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
                     onClick={() => handleCustomize(product)}
                   >
                     <Palette className="h-3 w-3 mr-1" />
-                    Customize Colors
+                    Customize
                   </Button>
                 )}
               </div>
