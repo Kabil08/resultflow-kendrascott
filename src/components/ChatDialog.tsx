@@ -476,6 +476,11 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
               </Button>
             </div>
           </div>
+
+          {/* Powered by ResultFlow.ai */}
+          <div className="text-xs text-center text-gray-500 pb-2">
+            Powered by ResultFlow.ai
+          </div>
         </SheetContent>
       </Sheet>
 

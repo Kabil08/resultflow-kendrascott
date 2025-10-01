@@ -36,8 +36,16 @@ export function IframeLayout() {
 
       {/* Chat components */}
       <div className="fixed right-4 bottom-4 z-50">
-        <FloatingChatButton onClick={() => setIsChatOpen(true)} />
-        <ChatDialog isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        <div className="flex flex-col items-end gap-2">
+          <div className="text-xs text-gray-600 bg-white/80 px-2 py-1 rounded-md shadow-sm">
+            Powered by ResultFlow.ai
+          </div>
+          <FloatingChatButton onClick={() => setIsChatOpen(true)} />
+          <ChatDialog
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+          />
+        </div>
       </div>
     </div>
   );
