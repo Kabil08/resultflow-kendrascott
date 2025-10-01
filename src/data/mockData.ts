@@ -273,7 +273,7 @@ export const productCustomizations: ProductCustomization[] = [
 ];
 
 export const commonResponses = {
-  greeting: `Hi! I'm your personal assistant. Based on your profile and preferences, here's what we have analyzed:
+  greeting: `Hi! I'm your personal assistant.
 
 Looks like you're looking for **necklaces** and there's a **deal going on for necklaces**! There are some **offers in necklaces curated for you**. Here are some options:`,
   giftHelp:
