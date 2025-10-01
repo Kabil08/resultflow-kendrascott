@@ -2,22 +2,22 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { SizeCustomizationDialog } from "./SizeCustomizationDialog";
-import type { SizeOption } from "../types/customization";
-import type { Product } from "../data/mockData";
-
-interface ColorOption {
-  id: string;
-  name: string;
-  value: string;
-  image?: string;
-  price_adjustment: number;
-}
+import type { ColorOption, SizeOption } from "../types/customization";
 
 interface ColorCustomizationDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  product: Product;
+  product: {
+    id: string;
+    name: string;
+    price: number;
+  };
   onCustomize: (
+    productId: string,
+    color: ColorOption,
+    size: SizeOption
+  ) => void;
+  onAddToCart?: (
     productId: string,
     color: ColorOption,
     size: SizeOption
@@ -56,6 +56,7 @@ export function ColorCustomizationDialog({
   onClose,
   product,
   onCustomize,
+  onAddToCart,
 }: ColorCustomizationDialogProps) {
   const [selectedColor, setSelectedColor] = useState<ColorOption | null>(null);
   const [showSizeDialog, setShowSizeDialog] = useState(false);
@@ -72,7 +73,11 @@ export function ColorCustomizationDialog({
 
   const handleSizeSelect = (size: SizeOption) => {
     if (selectedColor && product) {
-      onCustomize(product.id, selectedColor, size);
+      if (onAddToCart) {
+        onAddToCart(product.id, selectedColor, size);
+      } else {
+        onCustomize(product.id, selectedColor, size);
+      }
       onClose();
     }
   };
@@ -133,7 +138,7 @@ export function ColorCustomizationDialog({
 
       <SizeCustomizationDialog
         isOpen={showSizeDialog}
-        onClose={onClose}
+        onClose={() => setShowSizeDialog(false)}
         onSizeSelect={handleSizeSelect}
       />
     </>

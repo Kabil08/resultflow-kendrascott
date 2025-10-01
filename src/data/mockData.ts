@@ -275,22 +275,7 @@ export const productCustomizations: ProductCustomization[] = [
 export const commonResponses = {
   greeting: `Hi! I'm your personal assistant. Based on your profile and preferences, here's what we have analyzed:
 
-**🔍 Your Style Profile:**
-• Classic and elegant taste
-• Preference for gold-toned jewelry
-• Interest in versatile pieces
-
-**📋 Your Preferences:**
-• Comfortable, everyday wear
-• Layerable pieces
-• Hypoallergenic materials
-
-**✨ Special Considerations:**
-• Looking for pieces that transition from day to night
-• Interest in meaningful jewelry with personal significance
-• Preference for adjustable pieces for perfect fit
-
-Based on this comprehensive analysis, I've curated some perfect pieces for you:`,
+Looks like you're looking for **necklaces** and there's a **deal going on for necklaces**! There are some **offers in necklaces curated for you**. Here are some options:`,
   giftHelp:
     "I'd love to help you find the perfect gift! Could you tell me who you're shopping for and what's your budget range?",
   newArrivals:
@@ -301,8 +286,12 @@ Based on this comprehensive analysis, I've curated some perfect pieces for you:`
     "We have perfect pieces for every occasion! Are you shopping for a wedding, everyday wear, or a special event?",
   notFound:
     "I'm sorry, I couldn't find exactly what you're looking for. Would you like to see some similar items or try a different search?",
-  braceletSuggestion:
-    "These bracelets would perfectly complement your selected pieces, creating a cohesive and personalized look:",
+  braceletSuggestion: `Based on your style preferences, I've also found some **perfect matching pieces** that would complement your selection:
+
+- Our **signature earring collection** that pairs beautifully with these necklaces
+- **Elegant bracelet sets** that complete your jewelry ensemble
+
+Let me show you these curated selections:`,
   customization: {
     new_user:
       "I noticed you're interested in our jewelry! Did you know you can customize many of our pieces through our Color Bar™? You can choose your favorite stones, metals, and more to create a piece that's uniquely yours. Would you like me to show you how it works?",

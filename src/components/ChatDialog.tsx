@@ -28,15 +28,15 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
     {
       role: "assistant",
       content: commonResponses.greeting,
-      recommendations: [
-        mockRecommendations.necklaces,
-        mockRecommendations.earrings,
-      ],
+      recommendations: [mockRecommendations.necklaces],
     },
     {
       role: "assistant",
       content: commonResponses.braceletSuggestion,
-      recommendations: [mockRecommendations.bracelets],
+      recommendations: [
+        mockRecommendations.earrings,
+        mockRecommendations.bracelets,
+      ],
     },
   ]);
   const [input, setInput] = useState("");
@@ -49,6 +49,14 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
   const [customizingProduct, setCustomizingProduct] = useState<Product | null>(
     null
   );
+  const [products] = useState<Product[]>(() => {
+    return Object.values(mockRecommendations).reduce<Product[]>(
+      (acc, category) => {
+        return [...acc, ...category.products];
+      },
+      []
+    );
+  });
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -157,13 +165,27 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
     color: { name: string; value: string; price_adjustment: number },
     size: SizeOption
   ) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === productId
-          ? { ...item, selectedColor: color, selectedSize: size }
-          : item
-      )
-    );
+    setCartItems((prev) => {
+      const newItems = [...prev];
+      const existingItem = newItems.find((item) => item.id === productId);
+      if (existingItem) {
+        existingItem.selectedColor = color;
+        existingItem.selectedSize = size;
+      } else {
+        const product = products.find((p: Product) => p.id === productId);
+        if (product) {
+          newItems.push({
+            ...product,
+            quantity: 1,
+            selectedColor: color,
+            selectedSize: size,
+          });
+        }
+      }
+      return newItems;
+    });
+    setShowSmartCart(true);
+    setCustomizingProduct(null);
   };
 
   const getAIResponse = (
@@ -467,12 +489,11 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
 
       {customizingProduct && (
         <ColorCustomizationDialog
-          isOpen={true}
+          isOpen={!!customizingProduct}
           onClose={() => setCustomizingProduct(null)}
           product={customizingProduct}
-          onCustomize={(productId, color, size) =>
-            handleColorSelect(productId, color, size)
-          }
+          onCustomize={handleUpdateColor}
+          onAddToCart={handleColorSelect}
         />
       )}
     </>

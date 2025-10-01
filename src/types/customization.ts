@@ -7,6 +7,14 @@ export interface CustomizationOption {
   price_adjustment: number;
 }
 
+export interface ColorOption {
+  id: string;
+  name: string;
+  value: string;
+  image?: string;
+  price_adjustment: number;
+}
+
 export interface ProductCustomization {
   id: string;
   product_id: string;
