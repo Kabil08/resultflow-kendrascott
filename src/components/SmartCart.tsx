@@ -8,6 +8,8 @@ import type { SizeOption } from "../types/customization";
 import confetti from "canvas-confetti";
 import { ReviewsDialog } from "./ReviewsDialog";
 import { ColorCustomizationDialog } from "./ColorCustomizationDialog";
+import { mockRecommendations } from "../data/mockData";
+import { useToast } from "./ui/use-toast";
 
 interface ConfettiOptions {
   spread?: number;
@@ -35,6 +37,7 @@ interface SmartCartProps {
     productId: string,
     color: { name: string; value: string; price_adjustment: number }
   ) => void;
+  onAddToCart?: (product: Product) => void;
 }
 
 export function SmartCart({
@@ -43,8 +46,10 @@ export function SmartCart({
   cartItems,
   onUpdateQuantity,
   onUpdateColor,
+  onAddToCart,
 }: SmartCartProps) {
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const [isCheckoutComplete, setIsCheckoutComplete] = useState(false);
   const [showReviews, setShowReviews] = useState(false);
   const [customizingProduct, setCustomizingProduct] = useState<CartItem | null>(
@@ -136,6 +141,20 @@ export function SmartCart({
   ) => {
     onUpdateColor?.(productId, color);
     setCustomizingProduct(null);
+  };
+
+  const handleAddToCart = (product: Product) => {
+    const existingItem = cartItems.find((item) => item.id === product.id);
+    if (existingItem) {
+      onUpdateQuantity(product.id, existingItem.quantity + 1);
+    } else {
+      onAddToCart?.(product);
+    }
+
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart.`,
+    });
   };
 
   const renderSuccessContent = () => (
@@ -281,6 +300,96 @@ export function SmartCart({
             >
               Move to Cart
             </Button>
+
+            {/* Product Recommendations */}
+            <div className="mt-8 space-y-4">
+              <div className="space-y-1">
+                <h3 className="text-lg font-semibold text-ks-dark">
+                  Elevate Your Style
+                </h3>
+                <p className="text-sm text-ks-dark/60">
+                  Handpicked pieces that beautifully complement your selection
+                </p>
+              </div>
+
+              {/* Earrings Recommendations */}
+              <div className="p-4 bg-white rounded-lg border border-ks-border">
+                <h4 className="font-medium text-ks-dark mb-2">
+                  {mockRecommendations.earrings.title}
+                </h4>
+                <p className="text-sm text-ks-dark/60 mb-3">
+                  {mockRecommendations.earrings.description}
+                </p>
+                <div className="space-y-3">
+                  {mockRecommendations.earrings.products.map((product) => (
+                    <div key={product.id} className="flex items-center gap-3">
+                      <div className="w-16 h-16 bg-ks-beige rounded-lg overflow-hidden shrink-0">
+                        <img
+                          src={product.image || "/placeholder.svg"}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-ks-dark">
+                          {product.name}
+                        </p>
+                        <p className="text-sm text-ks-dark/60">
+                          ${product.price.toFixed(2)}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0 border-ks-gold text-ks-dark hover:bg-ks-beige"
+                        onClick={() => handleAddToCart(product)}
+                      >
+                        Add to Cart
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bracelets Recommendations */}
+              <div className="p-4 bg-white rounded-lg border border-ks-border">
+                <h4 className="font-medium text-ks-dark mb-2">
+                  {mockRecommendations.bracelets.title}
+                </h4>
+                <p className="text-sm text-ks-dark/60 mb-3">
+                  {mockRecommendations.bracelets.description}
+                </p>
+                <div className="space-y-3">
+                  {mockRecommendations.bracelets.products.map((product) => (
+                    <div key={product.id} className="flex items-center gap-3">
+                      <div className="w-16 h-16 bg-ks-beige rounded-lg overflow-hidden shrink-0">
+                        <img
+                          src={product.image || "/placeholder.svg"}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-ks-dark">
+                          {product.name}
+                        </p>
+                        <p className="text-sm text-ks-dark/60">
+                          ${product.price.toFixed(2)}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0 border-ks-gold text-ks-dark hover:bg-ks-beige"
+                        onClick={() => handleAddToCart(product)}
+                      >
+                        Add to Cart
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

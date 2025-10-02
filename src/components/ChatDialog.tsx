@@ -188,6 +188,19 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
     setCustomizingProduct(null);
   };
 
+  const handleAddToCart = (product: Product) => {
+    setCartItems((prev) => {
+      const newItems = [...prev];
+      const existingItem = newItems.find((item) => item.id === product.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        newItems.push({ ...product, quantity: 1 });
+      }
+      return newItems;
+    });
+  };
+
   const getAIResponse = (
     userMessage: string
   ): { content: string; recommendations?: ProductRecommendation[] } => {
@@ -490,6 +503,7 @@ export function ChatDialog({ isOpen, onClose }: ChatDialogProps) {
         cartItems={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
         onUpdateColor={handleUpdateColor}
+        onAddToCart={handleAddToCart}
       />
 
       {customizingProduct && (
